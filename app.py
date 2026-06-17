@@ -22,8 +22,8 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB limit
 mysql = MySQL(app)
 
 # S3 Configuration — credentials come from EC2 IAM role automatically
-S3_BUCKET = os.getenv('S3_BUCKET')
-AWS_REGION = os.getenv('AWS_REGION', 'ap-south-1')
+S3_BUCKET = os.getenv('amzn-bi-1437')
+AWS_REGION = os.getenv('AWS_REGION', 'ap-south-2')
 
 # Resolve the bucket's actual region, then build the client with SigV4 + virtual-hosted style
 # SigV4 + virtual-hosted style is required for presigned URLs on non-us-east-1 buckets
