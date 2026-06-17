@@ -9,6 +9,10 @@ from werkzeug.utils import secure_filename
 
 load_dotenv()
 
+print("MYSQL_HOST =", os.getenv("MYSQL_HOST"))
+print("S3_BUCKET =", os.getenv("S3_BUCKET"))
+print("AWS_REGION =", os.getenv("AWS_REGION"))
+
 app = Flask(__name__)
 
 # MySQL Configuration
@@ -22,7 +26,7 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10 MB limit
 mysql = MySQL(app)
 
 # S3 Configuration — credentials come from EC2 IAM role automatically
-S3_BUCKET = os.getenv('amzn-bi-1437')
+S3_BUCKET = os.getenv('S3_BUCKET')
 AWS_REGION = os.getenv('AWS_REGION', 'ap-south-2')
 
 # Resolve the bucket's actual region, then build the client with SigV4 + virtual-hosted style
@@ -53,9 +57,18 @@ def allowed_resume(filename):
 
 
 def upload_to_s3(file, folder):
+    print("S3_BUCKET =", S3_BUCKET)
+
     key = f"{folder}/{uuid.uuid4().hex}_{secure_filename(file.filename)}"
     content_type = file.content_type or 'application/octet-stream'
-    s3.upload_fileobj(file, S3_BUCKET, key, ExtraArgs={'ContentType': content_type})
+
+    s3.upload_fileobj(
+        file,
+        S3_BUCKET,
+        key,
+        ExtraArgs={'ContentType': content_type}
+    )
+
     return key
 
 
